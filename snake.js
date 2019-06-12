@@ -10,7 +10,8 @@ const DEFAULT_SQUARE = {
 let headrow = 1, headcol = 1;
 let score = 5;
 let direction = -1;
-let canMoveThisTick = true;
+let inputQueue = [];
+let lost = false;
 /* -1= not moving (only happens at the start of the game)
  * 0 = up
  * 1 = right
@@ -29,30 +30,28 @@ window.addEventListener("load",function(){
     initialFoodCell.style.backgroundColor = "#ff0000";
 
     document.body.addEventListener("keydown", event => {
-        //TODO: add input buffer for two inputs on the same frame
+        //when arrow key inputs come in, the are added to a queue
+        //the tick method polls the queue every frame
+        //this prevents two inputs on the same frame from interfering
         switch(event.keyCode){
             case 38:
-                if(direction!==2 && canMoveThisTick){
-                    direction = 0;
-                    canMoveThisTick = false;
+                if(inputQueue[0]?inputQueue[0]:direction!==2 && !lost){
+                    inputQueue.push(0);
                 }
                 break;
             case 39:
-                if(direction!==3 && canMoveThisTick){
-                    direction = 1;
-                    canMoveThisTick = false;
+                if(inputQueue[0]?inputQueue[0]:direction!==3 && !lost){
+                    inputQueue.push(1);
                 }
                 break;
             case 40:
-                if(direction!==0 && canMoveThisTick){
-                    direction = 2;
-                    canMoveThisTick = false;
+                if(inputQueue[0]?inputQueue[0]:direction!==0 && !lost){
+                    inputQueue.push(2);
                 }
                 break;
             case 37:
-                if(direction!==1 && canMoveThisTick){
-                    direction = 3;
-                    canMoveThisTick = false;
+                if(inputQueue[0]?inputQueue[0]:direction!==1 && !lost){
+                    inputQueue.push(3);
                 }
                 break;
             case 32:
@@ -68,6 +67,9 @@ window.addEventListener("load",function(){
 });
 
 function tick(){
+    //poll Queue for new direction, if not empty
+    direction = (inputQueue[0]!==undefined)?inputQueue.shift():direction;
+    //console.log("direction = " + direction);
     if(direction===-1)return;
     //move the snake's head forward
     if(direction===0){
@@ -98,7 +100,6 @@ function tick(){
         }
         headcol--;
     }
-    canMoveThisTick = true;
     //decrement ages of all cells
     for(let r = 0;r<ROWS;r++){
         for(let c=0;c<COLS;c++){
@@ -112,6 +113,11 @@ function tick(){
     }
     //move head of snake forward
     let head = document.getElementById(headrow+','+headcol);
+    //handle collision with snake
+    if(parseInt(head.getAttribute("age"))){
+        loss();
+        return;
+    }
     head.setAttribute("age",""+score);
     head.style.backgroundColor = getColor(score);
 
@@ -139,13 +145,27 @@ function tick(){
             newFoodCell.style.backgroundColor = "#ff0000";
         }catch (error){
             //TODO: handle victory here (all cells are full)
-            console.log("got error in getting Available Cell");
-            console.log(error);
         }
     }
     
 }
 function loss(){
+    direction = -1;
+    lost = true;
+    inputQueue = [];
+    let head = document.getElementById(headrow+','+headcol);
+    head.style.backgroundColor = "#000000";
+    let scoreText = document.getElementById("score");
+    scoreText.innerText = "Game Over! Score: " + score;
+    let replayButton = document.createElement("button");
+    replayButton.onclick = () => {
+        resetGame();
+    };
+    replayButton.innerText = "Play Again";
+    replayButton.setAttributeNode(document.createAttribute("autofocus"));
+    scoreText.append(replayButton);
+}
+function resetGame(){
     //TODO: implement this
 }
 function getAvailableCell(){

@@ -1,2 +1,3 @@
 # jsnake
-Still very much a work in progress!
+Snake, built using just DOM elements  
+Inspired by <http://patorjk.com/games/snake>
