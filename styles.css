@@ -42,10 +42,10 @@ body{
 	margin:0px;
 	border:2px solid black;
 	padding:0px;
-	/*width = 21*cols */
+	/*width = 22*cols */
 	width:calc(22px*30);
 	min-width:calc(22px*30);
-	/*height = 21*rows */
+	/*height = 22*rows */
 	height:calc(22px*20);
 	min-height:calc(22px*20);
 	display:flex;
