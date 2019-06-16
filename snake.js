@@ -7,6 +7,7 @@ let direction = -1;
 let inputQueue = [];
 let lost = false;
 let paused = false;
+let funcID = undefined; //will be set to the ID that can be used with clearInterval
 /* -1= not moving (only happens at the start of the game)
  * 0 = up
  * 1 = right
@@ -68,7 +69,7 @@ window.addEventListener("load",function(){
         }
 
     });
-    setInterval(tick,SPEED);
+    funcID = setInterval(tick,SPEED);
 });
 
 function tick(){
