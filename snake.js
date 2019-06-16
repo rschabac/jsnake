@@ -1,5 +1,5 @@
-const ROWS = 20;
-const COLS = 30;
+const ROWS = 14;
+const COLS = 36;
 const SPEED = 75;
 let headrow = 1, headcol = 1;
 let score = 5;
@@ -49,22 +49,20 @@ window.addEventListener("load",function(){
                     inputQueue.push(3);
                 }
                 break;
-            case 32:
-                paused = !paused;
-                //currently, this is a workaround,
-                //does not unpause when space is pressed,
-                //unpauses when an arrow key is pressed
-                //also allows for backtracking
+            case 32://space
+                if(!lost){//prevents confusion if space is pressed after game ends
+                    paused = !paused;
+                }
                 //TODO: add some visual for pausing
                 break;
-            case 13:
+            case 13://Enter
                 if(lost){
                     resetGame();
                     //workaround for not being able to set
                     //focus of replay button
                 }
                 break;
-            case 84:
+            case 84://T
                 tick();
                 //debugging purposes
         }
