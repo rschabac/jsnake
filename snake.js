@@ -69,6 +69,11 @@ window.addEventListener("load",function(){
         }
 
     });
+    document.addEventListener("visibilitychange", () => {//pauses game if user changes to another browser tab
+        if(!lost){
+            paused = !paused;
+        }
+    });
     funcID = setInterval(tick,SPEED);
 });
 
